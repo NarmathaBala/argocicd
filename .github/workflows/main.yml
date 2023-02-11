@@ -31,4 +31,25 @@ jobs:
         with:
           context: .
           push: true
-          tags: nabalasacr.azurecr.io/app:latest
+          tags: nabalasacr.azurecr.io/app:${{ github.sha }}
+
+  update-manifest-stage:
+    runs-on: ubuntu-latest
+    needs: ['docker']
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: narmathabala/argoinfra
+          ref: 'main'
+          token: ${{ secrets.G_TOKEN }}
+      - name: setup git config
+        run: |
+          git config --global user.email "narmathabala@gmail.com"
+          git config --global user.name "narmathabala"
+          echo ${{ github.sha }}
+          sed -i "s#${{ github.actor }}.*#${{ github.actor }}/argocicd:${{ github.sha }}#g" deployment.yaml
+          git add -A
+          git commit -am "Update image for - ${{ github.sha }}"
+      - run: echo ${{ github }}
+      - run: git push origin main
+
