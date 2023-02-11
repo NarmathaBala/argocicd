@@ -31,7 +31,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: nabalasacr.azurecr.io/app:${{ github.sha }}
+          tags: nabalasacr.azurecr.io/helloworld:${{ github.sha }}
 
   update-manifest-stage:
     runs-on: ubuntu-latest
@@ -48,7 +48,7 @@ jobs:
           git config --global user.name "narmathabala"
           echo ${{ github.sha }}
           echo ${{ github.actor }}
-          sed -i "s#${{ github.actor }}.*#${{ github.actor }}/argocicd:${{ github.sha }}#g" deployment.yaml
+          sed -i "s#${{ github.actor }}.*#${{ github.actor }}/helloworld:${{ github.sha }}#g" deployment.yaml
           git add -A
           git commit -am "Update image for - ${{ github.sha }}"
       - run: echo ${{ github }}
